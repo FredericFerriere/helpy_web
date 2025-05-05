@@ -1,7 +1,7 @@
-import Image from "next/image";
+import MyRestaurants from './MyRestaurants.js';
 
 export default function Home() {
     return (
-      <h1>test</h1>
+        <MyRestaurants />
  );
 }

@@ -1,0 +1,10 @@
+{
+  "version": "0.2.1",
+  "tasks": [
+    {
+      "taskLabel": "tâche-App",
+      "appliesTo": "app/App.js",
+      "type": "launch"
+    }
+  ]
+}
