@@ -1,4 +1,5 @@
 'use client'
+import './globals.css'
 
 import React, { useState, useEffect } from 'react';
 import Axios from "axios";
@@ -11,8 +12,8 @@ const RESTAURANTS = [
 ];
 
 const CITIES = {
-    "Paris": { latitude: 48.8620625, longitude: 2.3427284 },
-    "Annecy": { latitude: 45.90751266479492, longitude: 6.124344348907471 }
+    "Paris": { latitude: 48.862062, longitude: 2.342728 },
+    "Annecy": { latitude: 45.907512, longitude: 6.124344}
 };
 
 function RestaurantSearch({ city, radius, onCityChange, onRadiusChange }) {
@@ -32,32 +33,21 @@ function RestaurantRow({ restaurant } ) {
     return (
         <tr>
             <td> {restaurant.name} </td>
-            <td> {restaurant.rating} </td>
-            <td> {restaurant.city} </td>
+            <td> {restaurant.average_rating} </td>
         </tr>
     );
 }
 
-function RestaurantList({ city, restaurants }) {
-    const rows = [];
+function RestaurantList({ restaurants }) {
 
-    restaurants.forEach((restaurant) => {
-        rows.push(
-            <RestaurantRow
-                restaurant={restaurant}
-                key={restaurant.name}
-            />
-        )
-    }
-    );
+    const rows = restaurants.map(restaurant => <RestaurantRow key={restaurant.id} restaurant={restaurant} />);
 
     return (
-        <table> 
+        <table className="restaurant-rating-table"> 
             <thead>
                 <tr>
                     <th> Nom </th>
                     <th> Note </th>
-                    <th> Ville </th>
                 </tr>
             </thead>
             <tbody>
@@ -68,25 +58,27 @@ function RestaurantList({ city, restaurants }) {
 }
 
 
-function fetchRestaurants({ latitude, longitude, radius }) {
+function FilterableList() {
+    const [city, setCity] = useState('Paris');
+    const [radius, setRadius] = useState(5000);
+
+    const [restaurants, setRestaurants] = useState([]);
+
     useEffect(() => {
-        Axios.get('http://127.0.0.1:8000/users/u1/restaurants/suggestions?latitude=45.9&longitude=6.11&radius=1500')
-            .then(res= response.data)
+        Axios.get('http://127.0.0.1:8000/users/u1/restaurants/geographic_filter', {
+            params: {
+                latitude: CITIES[city].latitude,
+                longitude: CITIES[city].longitude,
+                radius: radius
+            }
+        })
+            .then(response => {
+                setRestaurants(response.data);
+            })
             .catch(error => {
                 console.error(error);
             });
-    }, res = []);
-    return res;
-}
-
-
-function FilterableList() {
-    const [city, setCity] = useState('Paris');
-    const [radius, setRadius] = useState(1000);
-    const city_lat = CITIES[city].latitude;
-    const city_lon = CITIES[city].longitude;
-
-    const restaurants = fetchRestaurants(city_lat, city_lon, radius);
+    }, [city, radius]);
 
     return (
         <div>
@@ -97,7 +89,6 @@ function FilterableList() {
                 onRadiusChange={setRadius}
             />
             <RestaurantList
-                city={city}
                 restaurants={restaurants}
             />
         </div>
@@ -106,6 +97,7 @@ function FilterableList() {
 
 
 export default function MyRestaurants() {
+
     return (
         <FilterableList />
     );

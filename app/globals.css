@@ -24,3 +24,22 @@ body {
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
 }
+
+.restaurant-rating-table {
+    table-layout: fixed;
+    width: 300px;
+    border-collapse: collapse;
+    border: 1px solid black
+}
+
+
+.restaurant-rating-table thead {
+    background-color: darkslategrey;
+    color: white;
+    text-align: left
+}
+
+
+.restaurant-rating-table thead th:first-child {
+    width: 80%;
+}
